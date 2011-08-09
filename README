@@ -1,0 +1,13 @@
+This is a command for Sublime Text 2 that is meant to be bound to the slash ("/") key in order to semi auto close open HTML tags (in part inspired by the discussion at http://www.sublimetext.com/forum/viewtopic.php?f=5&t=1358).
+
+
+INSTALLATION
+============
+1. Put the file close_tag_on_slash.py into the User folder in your Sublime Text 2 Packages folder (~/Library/Application Support/Sublime Text 2/Packages/User on Mac OS X)
+
+2. Select Sublime Text 2 > Preferences > Key Bindings - User from the main menu
+
+3. Add the following to the keymap file (inside the square brackets) and then save it:
+   { "keys": ["/"], "command": "close_tag_on_slash" }
+
+4. Done! :)
