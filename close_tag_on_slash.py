@@ -32,10 +32,18 @@ class CloseTagOnSlashCommand(sublime_plugin.TextCommand):
 				tag = after[closeStart + 2:closeEnd]
 				before = after[0:closeStart]
 				openStart = before.rfind('<' + tag + '>')
-				if -1 == openStart:
-					openStart = before.rfind('<' + tag + ' ')
 				if -1 != openStart:
-					before = before[0:openStart]
+					openEnd = openStart + len(tag) + 1
+				else:
+					openStart = before.rfind('<' + tag + ' ')
+					if -1 != openStart:
+						openEnd = before.find('>', openStart + len(tag) + 1)
+				if -1 != openStart and -1 != openEnd:
+					extraClose = before.find('</' + tag + '>', openEnd, closeStart)
+					if -1 != extraClose:
+						return self.splitOnNearestClosedTag(after[0:openStart] + after[extraClose + len(tag) + 3:])
+					else:
+						before = before[0:openStart]
 				after = after[closeEnd + 1:]
 		return before, after
 
