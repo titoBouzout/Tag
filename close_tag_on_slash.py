@@ -58,6 +58,6 @@ class CloseTagOnSlashCommand(sublime_plugin.TextCommand):
 					return self.nearestUnclosedTag(string[0:openStart - 1])
 			else:
 				space = string.find(' ', openStart + 1)
-				if -1 != space:
+				if (-1 != space) and (space < openEnd):
 					openEnd = space
 				return string[openStart + 1:openEnd]
