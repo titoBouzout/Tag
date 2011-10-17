@@ -13,7 +13,6 @@ class CloseTagOnSlashCommand(sublime_plugin.TextCommand):
 				if region.empty():
 					self.view.insert(edit, cursorPosition, '/');
 				else:
-					self.view.erase(edit, sublime.Region(region.begin(), region.end()))
-					self.view.insert(edit, region.begin(), '/');
+					self.view.replace(edit, sublime.Region(region.begin(), region.end()), '/');
 		if closeTags:
 			self.view.run_command('close_tag');
