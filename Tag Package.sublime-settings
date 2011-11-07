@@ -1,0 +1,14 @@
+{
+	/* TAG INDENT SETTINGS */
+		
+		// example: <div class="clear"></div>
+		"empty_tags_close_on_same_line" : true,
+
+		// example: <div>this contains less than 80 characters</div>
+		"tags_with_little_content_on_same_line" : true,
+		"little_content_means_this_number_of_characters" : 60,
+
+		"preserve_additional_new_lines" : true
+
+	/* END TAG INDENT SETTINGS */
+}

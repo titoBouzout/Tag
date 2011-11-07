@@ -1,0 +1,18 @@
+[
+  {
+    "caption": "Remove Picked Tags in Selection",
+    "command": "tag_remove_picked_in_selection"
+  },
+  {
+    "caption": "Remove Picked Tags in Document",
+    "command": "tag_remove_picked_in_document"
+  },
+  {
+    "caption": "Remove All Tags in Selection",
+    "command": "tag_remove_all_in_selection"
+  },
+  {
+    "caption": "Remove All Tags in Document",
+    "command": "tag_remove_all_in_document"
+  }
+]

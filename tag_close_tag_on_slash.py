@@ -1,6 +1,6 @@
 import sublime, sublime_plugin
 
-class CloseTagOnSlashCommand(sublime_plugin.TextCommand):
+class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		closeTags = False;
 		for region in self.view.sel():
@@ -16,3 +16,5 @@ class CloseTagOnSlashCommand(sublime_plugin.TextCommand):
 					self.view.replace(edit, sublime.Region(region.begin(), region.end()), '/');
 		if closeTags:
 			self.view.run_command('close_tag');
+
+			

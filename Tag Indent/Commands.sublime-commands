@@ -1,0 +1,10 @@
+[
+  {
+    "caption": "Indent Tags on Selection",
+    "command": "tag_indent"
+  },
+  {
+    "caption": "Indent Tags on Document",
+    "command": "tag_indent_document"
+  }
+]
