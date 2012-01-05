@@ -1,0 +1,3 @@
+[
+	{ "keys": ["ctrl+<"], "command": "tag_insert_as_tag" }
+]
