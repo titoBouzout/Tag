@@ -7,7 +7,7 @@ Currently provides: "Close tag on slash", "Tag indent" and "Tag Remove"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
 
-Source / Installation 
+Source / Installation
 ------------------
 
 Convenient way to install this plugin is to use "Package Control" via http://wbond.net/sublime_packages/package_control
@@ -30,7 +30,7 @@ Runs automatically when inserting an Slash "/" into an HTML document.
 Tag Indent
 ------------------
 
-Apply and/or add beauty indentation to HTML/XML/RDF/XUL tags found on selection(s). 
+Apply and/or add beauty indentation to HTML/XML/RDF/XUL tags found on selection(s).
 
 *Aims*
 
@@ -60,3 +60,12 @@ Provides the ability to remove all tags or some selected tags in a document or i
 *Usage*
 
 The main menu "Edit" -> "Tag" provide access to the commands
+
+Insert As Tag
+------------------
+
+Converts the current word to an html-tag. If there is no current word, a default tag is inserted.
+
+*Usage*
+
+The short-cut is "ctrl+<"
