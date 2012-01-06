@@ -6,7 +6,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 		for region in self.view.sel():
 			cursorPosition = region.begin()
 			previousCharacter = self.view.substr(sublime.Region(cursorPosition - 1, cursorPosition))
-			if '<' == previousCharacter and self.view.score_selector(cursorPosition, 'text.html') > 0:
+			if '<' == previousCharacter and self.view.score_selector(cursorPosition, 'text.html | text.xml') > 0:
 				self.view.erase(edit, sublime.Region(cursorPosition - 1, cursorPosition))
 				closeTags = True;
 			else:

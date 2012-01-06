@@ -146,7 +146,7 @@ class TagIndentCommand(sublime_plugin.TextCommand):
 		for region in self.view.sel():
 			if region.empty():
 				continue
-			if self.view.score_selector(region.a, 'text.html') <= 0:
+			if self.view.score_selector(region.a, 'text.html | text.xml') <= 0:
 				return False
 			else:
 				value = True
