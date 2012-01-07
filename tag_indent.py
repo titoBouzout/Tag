@@ -126,7 +126,7 @@ def TagIndentBlock(data, view):
 			beauty = re.sub(r'</'+tag+'>\s+([^\s])', '</'+tag+'> \\1', beauty, re.I)
 
 		for tag in trim_inner_left:
-			beauty = re.sub(r'<'+tag+'([^>]*)>\s+([^\s])', '<'+tag+'\\1>\\2', beauty, re.I)
+			beauty = re.sub(r'<'+tag+'(>| [^>]*>)\s+([^\s])', '<'+tag+'\\1\\2', beauty, re.I)
 		for tag in trim_inner_right:
 			beauty = re.sub(r'\s+</'+tag+'>', '</'+tag+'> ', beauty, re.I)
 
@@ -163,8 +163,8 @@ class TagIndentDocumentCommand(sublime_plugin.TextCommand):
 		for region in self.view.sel():
 			if region.empty():
 				continue
-			if self.view.score_selector(region.a, 'text.html') <= 0:
+			if self.view.score_selector(region.a, 'text.html | text.xml') <= 0:
 				return False
 			else:
 				value = True
-		return value or self.view.score_selector(sublime.Region(0, 100).a, 'text.html') > 0
+		return value or self.view.score_selector(sublime.Region(0, 100).a, 'text.html | text.xml') > 0
