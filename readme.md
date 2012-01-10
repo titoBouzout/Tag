@@ -50,7 +50,7 @@ It takes the starting "indentation level" from the first line of each selection 
 
 On empty tags, and on tags with less than 60 characters, it writes the tag in one line.
 
-Short-cut is "ctrl+shift+h"
+Short-cut is "ctrl+alt+f"
 
 Tag Remove
 ------------------
