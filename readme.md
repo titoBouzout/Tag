@@ -68,4 +68,4 @@ Converts the current word to an html-tag. If there is no current word, a default
 
 *Usage*
 
-The short-cut is "ctrl+<"
+The short-cut is "ctrl+shift+,"
