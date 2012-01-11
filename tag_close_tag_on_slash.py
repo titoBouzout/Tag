@@ -25,3 +25,6 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 					self.view.replace(edit, sublime.Region(region.begin(), region.end()), '/');
 		if closeTags:
 			self.view.run_command('close_tag');
+			if self.view.window():
+				self.view.window().show_input_panel("boo!", '', '', None, None)
+				self.view.window().run_command('hide_panel');
