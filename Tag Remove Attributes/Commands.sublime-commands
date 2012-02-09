@@ -1,0 +1,18 @@
+[
+  {
+    "caption": "Tag: Remove Picked Attributes From Tags in Selection",
+    "command": "tag_remove_picked_attributes_in_selection"
+  },
+  {
+    "caption": "Tag: Remove Picked Attributes From Tags in Document",
+    "command": "tag_remove_picked_attributes_in_document"
+  },
+  {
+    "caption": "Tag: Remove All Attributes From Tags in Selection",
+    "command": "tag_remove_all_attributes_in_selection"
+  },
+  {
+    "caption": "Tag: Remove All Attributes From Tags in Document",
+    "command": "tag_remove_all_attributes_in_document"
+  }
+]
