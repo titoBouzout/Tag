@@ -69,3 +69,12 @@ Converts the current word to an html-tag. If there is no current word, a default
 *Usage*
 
 The short-cut is "ctrl+shift+,"
+
+Tag Remove Attributes
+------------------
+
+Allows to remove attributes from tags for selection or document.
+
+*Usage*
+
+The main menu "Edit" -> "Tag" provide access to the commands
