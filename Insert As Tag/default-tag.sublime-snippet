@@ -1,5 +1,0 @@
-<snippet>
-    <content><![CDATA[<${1:p}>${2:$SELECTION}</${1/([^ ]+).*/$1/}>]]></content>
-    <scope>text.html, text.xml</scope>
-    <description>Default Tag</description>
-</snippet>

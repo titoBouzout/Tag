@@ -2,28 +2,27 @@ import sublime
 import sublime_plugin
 import re
 
-
 class TagInsertAsTagCommand(sublime_plugin.TextCommand):
 
   def run(self, edit):
     view = self.view
-    self_closing = ["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"]
-    self_closing_empty = ["br", "hr", "wbr"]
-
+    self_closing_tags = re.compile("^(area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source)", re.I)
+    new_selections = []
     for region in view.sel():
       if view.score_selector(region.a, 'text.html, text.xml') > 0:
-        word_reg = view.word(region)
-        word = view.substr(word_reg)
-        if re.search("\s\Z", word) or word == "":
-          view.run_command("insert_snippet", {"name": "Packages/Tag/Insert As Tag/default-tag.sublime-snippet"})
+        source = view.substr(region)
+        if not source.strip():
+          pass
+        elif re.match("^\s", source):
+          view.replace(edit, region, '<p>'+source+'</p>')
+          new_selections.append(sublime.Region(region.end()+3, region.end()+3))
+        elif self_closing_tags.match(source):
+          view.replace(edit, region, '<'+source+'/>')
+          new_selections.append(sublime.Region(region.end()+3, region.end()+3))
         else:
-          view.sel().clear()
-          if word in self_closing:
-            if word in self_closing_empty:
-              tags = "<%s>" % (word)
-            else:
-              tags = "<%s >" % (word)
-          else:
-            tags = "<%s></%s>" % (word, word)
-          view.replace(edit, word_reg, tags)
-          view.sel().add(sublime.Region(word_reg.b + 2))
+          view.replace(edit, region, '<'+source+'></'+source.split(' ')[0]+'>')
+          new_selections.append(sublime.Region(region.end()+2, region.end()+2))
+
+    view.sel().clear()
+    for sel in new_selections:
+      view.sel().add(sel)
