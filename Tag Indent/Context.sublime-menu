@@ -3,11 +3,11 @@
 	{
 		"command": "tag_indent",
 		"id":"tag-indent-selection",
-		"caption":"Auto-Format HTML on Selection"
+		"caption":"Auto-Format Tags on Selection"
 	},
 	{
 		"command": "tag_indent_document",
 		"id":"tag-indent-document",
-		"caption":"Auto-Format HTML on Document"
+		"caption":"Auto-Format Tags on Document"
 	}
 ]

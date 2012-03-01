@@ -1,10 +1,10 @@
 [
   {
-    "caption": "Tag: Auto-Format HTML on Selection",
+    "caption": "Tag: Auto-Format Tags on Selection",
     "command": "tag_indent"
   },
   {
-    "caption": "Tag: Auto-Format HTML on Document",
+    "caption": "Tag: Auto-Format Tags on Document",
     "command": "tag_indent_document"
   }
 ]
