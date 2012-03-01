@@ -60,6 +60,8 @@ def TagIndentBlock(data, view):
 		i = 0
 		while i < lenght:
 			f = tags[i]
+			no_indent_match  = no_indent.match(f[:20])
+
 			if f.strip() == '':
 				if preserve_additional_new_lines and aditional_new_lines_re.match(f):
 					beauty += '\n'
@@ -69,7 +71,7 @@ def TagIndentBlock(data, view):
 					beauty += '\n'
 				starting = False
 				beauty += current_indentation
-				if not no_indent.match(f[:20]):
+				if not no_indent_match:
 					beauty += indent_character*level
 				if skip_content_of_this_tags_re.match(f[:20]):
 					tag_is = re.sub(r'<([^ ]+)(>| ).*', '\\1', f[:20], 1)
@@ -86,20 +88,23 @@ def TagIndentBlock(data, view):
 							break
 				else:
 					beauty += f.strip()
-					level = level + 1
+					if not no_indent_match:
+						level = level + 1
 				#self closing tag
 				if f[-2:] == '/>' or self_closing_tags.match(f):
 					#beauty += '2'
 					beauty += current_indentation
-					level = level - 1
+					if not no_indent_match:
+						level = level - 1
 			elif f[:2]=='</':
-				level = level - 1
+				if not no_indent_match:
+					level = level - 1
 				#beauty += '3'
 				if starting == False:
 					beauty += '\n'
 				starting = False
 				beauty += current_indentation
-				if not no_indent.match(f[:20]):
+				if not no_indent_match:
 					beauty += indent_character*level
 				beauty += f.strip()
 			else:
@@ -108,7 +113,7 @@ def TagIndentBlock(data, view):
 					beauty += '\n'
 				starting = False
 				beauty += current_indentation
-				if not no_indent.match(f[:20]):
+				if not no_indent_match:
 					beauty += indent_character*level
 				beauty += f.strip()
 			i = i+1
@@ -142,7 +147,10 @@ class TagIndentCommand(sublime_plugin.TextCommand):
 		for region in self.view.sel():
 			if region.empty():
 				continue
-			dataRegion = sublime.Region(self.view.line(region.begin()).begin(), region.end())
+			if self.view.score_selector(region.a, 'text.html | text.xml') <= 0:
+				dataRegion = region
+			else:
+				dataRegion = sublime.Region(self.view.line(region.begin()).begin(), region.end())
 			data = TagIndentBlock(self.view.substr(dataRegion), self.view)
 			self.view.replace(edit, dataRegion, data);
 
