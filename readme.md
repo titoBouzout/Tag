@@ -3,7 +3,7 @@ Description
 
 "Tag" plugin is a collection of packages about tags, mixed together in an effort to provide a single package with utilities to work with tags.
 
-Currently provides: "Close tag on slash", "Tag indent" and "Tag Remove"
+Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Tag Remove Attributes"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
 
