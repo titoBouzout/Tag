@@ -7,6 +7,8 @@ current_indentation_re = re.compile("^\s*")
 #to leave additional new lines as is
 aditional_new_lines_re = re.compile("^\s*\n+\s*\n+\s*$")
 
+no_indent = re.compile("^</?(head|body)", re.I)
+
 #possible self closing tags:       XML------HTML------------------------------------------------HTML5----------------
 self_closing_tags = re.compile("^<(\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source)", re.I)
 
@@ -14,7 +16,7 @@ skip_content_of_this_tags_re = re.compile("^<(script|style|pre|code)(>| )", re.I
 
 trim_outter_left  = "abbr|acronym|dfn|em|strong|b|i|u|font|del|ins|sub|sup".split('|')
 trim_outter_right = "".split('|')
-                  
+
 trim_inner_left   = "abbr|acronym|dfn|em|strong|b|i|u|font|del|ins|sub|sup|title".split('|')
 trim_inner_right  = "abbr|acronym|dfn|em|strong|b|i|u|font|del|ins|sub|sup|title".split('|')
 
@@ -62,13 +64,11 @@ def TagIndentBlock(data, view):
 					beauty += '\n'
 			elif f[0]=='<' and f[1] != '/':
 				#	beauty += '1'
-				if f[:4] != '<!--' and starting == False:
+				if starting == False:
 					beauty += '\n'
 				starting = False
-				if f[:4] == '<!--':
-					pass
-				else:
-					beauty += current_indentation
+				beauty += current_indentation
+				if not no_indent.match(f[:20]):
 					beauty += indent_character*level
 				if skip_content_of_this_tags_re.match(f[:20]):
 					tag_is = re.sub(r'<([^ ]+)(>| ).*', '\\1', f[:20], 1)
@@ -98,14 +98,18 @@ def TagIndentBlock(data, view):
 					beauty += '\n'
 				starting = False
 				beauty += current_indentation
-				beauty += indent_character*level + f.strip()
+				if not no_indent.match(f[:20]):
+					beauty += indent_character*level
+				beauty += f.strip()
 			else:
 				#beauty += '4'
 				if starting == False:
 					beauty += '\n'
 				starting = False
 				beauty += current_indentation
-				beauty += indent_character*level + f.strip()
+				if not no_indent.match(f[:20]):
+					beauty += indent_character*level
+				beauty += f.strip()
 			i = i+1
 
 		if bool(settings.get('empty_tags_close_on_same_line', True)):
