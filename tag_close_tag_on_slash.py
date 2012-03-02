@@ -48,7 +48,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 		try:
 			i = 0
-			lenght = len(data)
+			lenght = len(data)-1
 			while i < lenght:
 				maybe_tag = self.tag_name(data[i])
 				# if opening tag, close the tag
