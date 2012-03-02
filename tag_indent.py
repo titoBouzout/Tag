@@ -8,7 +8,7 @@ current_indentation_re = re.compile("^\s*")
 aditional_new_lines_re = re.compile("^\s*\n+\s*\n+\s*$")
 
 # no indentation
-no_indent = re.compile("^</?(head|body)", re.I)
+no_indent = re.compile("^</?(head|body)[>| ]", re.I)
 
 # possible self closing tags:      XML------HTML------------------------------------------------HTML5----------------
 self_closing_tags = re.compile("^<(\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source)", re.I)
