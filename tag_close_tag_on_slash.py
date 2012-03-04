@@ -20,10 +20,10 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 			previousCharacter = view.substr(sublime.Region(cursorPosition - 1, cursorPosition))
 
 			if '<' == previousCharacter:
-				closed_some_tag = True
 				tag = self.close_tag(view.substr(sublime.Region(0, cursorPosition)))
 				view.insert(edit, cursorPosition, tag);
 				if tag != '/':
+					closed_some_tag = True
 					new_selections_insert.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
 				else:
 					new_selections.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
