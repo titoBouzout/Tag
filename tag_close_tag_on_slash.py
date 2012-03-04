@@ -13,6 +13,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 		closed_some_tag = False
 		new_selections = []
+		new_selections_insert = []
 
 		for region in view.sel():
 			cursorPosition = region.begin()
@@ -22,7 +23,10 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 				closed_some_tag = True
 				tag = self.close_tag(view.substr(sublime.Region(0, cursorPosition)))
 				view.insert(edit, cursorPosition, tag);
-				new_selections.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
+				if tag != '/':
+					new_selections_insert.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
+				else:
+					new_selections.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
 			else:
 				if region.empty():
 					view.insert(edit, cursorPosition, '/');
@@ -37,6 +41,11 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 		# re-add selections
 		view.sel().clear()
+		if closed_some_tag:
+			for sel in new_selections_insert:
+				view.sel().add(sel)
+			view.run_command('insert',  {"characters": ">"})
+
 		for sel in new_selections:
 			view.sel().add(sel)
 
@@ -53,7 +62,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 				maybe_tag = self.tag_name(data[i])
 				# if opening tag, close the tag
 				if maybe_tag and not self.tag_is_closing(data[i]):
-					return '/'+self.tag_name(data[i])+'>'
+					return '/'+self.tag_name(data[i])+''
 				# if closing tag, jump to opening tag
 				else:
 					if maybe_tag:
