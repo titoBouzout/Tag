@@ -1,0 +1,3 @@
+[
+	{ "keys": ["alt+."], "command": "tag_close_tag" }
+]
