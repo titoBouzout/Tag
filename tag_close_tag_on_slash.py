@@ -65,9 +65,16 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 				else:
 					if maybe_tag:
 						i = i+1
+						skip = 0
 						while i < lenght:
-							if self.tag_name(data[i]) == maybe_tag and not self.tag_is_closing(data[i]):
-								break
+							if self.tag_name(data[i]) == maybe_tag:
+								if not self.tag_is_closing(data[i]):
+									if skip == 0:
+										break
+									else:
+										skip = skip-1
+								else:
+									skip = skip+1
 							i = i+1
 				i = i+1
 			return '/'
