@@ -34,13 +34,11 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 					view.replace(edit, sublime.Region(region.begin(), region.end()), '/');
 				new_selections.append(sublime.Region(region.end(), region.end()))
 
-		# hide the autocomplete popup
-		if closed_some_tag and view.window():
-			view.window().show_input_panel("boo!", '', '', None, None)
-			view.window().run_command('hide_panel');
-
-		# re-add selections
 		view.sel().clear()
+
+		# we inserted the "</tagname" part.
+		# running the command "insert" with parameter ">" to allow
+		# to the application indent these tags correctly
 		if closed_some_tag:
 			for sel in new_selections_insert:
 				view.sel().add(sel)
