@@ -40,6 +40,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 		# running the command "insert" with parameter ">" to allow
 		# to the application indent these tags correctly
 		if closed_some_tag:
+			view.run_command('hide_auto_complete')
 			for sel in new_selections_insert:
 				view.sel().add(sel)
 			view.run_command('insert',  {"characters": ">"})
