@@ -21,10 +21,19 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 			if '<' == previousCharacter:
 				tag = self.close_tag(view.substr(sublime.Region(0, cursorPosition)))
-				view.insert(edit, cursorPosition, tag);
+				if region.empty():
+					replace = False
+					view.insert(edit, cursorPosition, tag);
+				else:
+					replace = True
+					view.replace(edit, sublime.Region(region.begin(), region.end()), '');
+					view.insert(edit, cursorPosition, tag);
 				if tag != '/':
 					closed_some_tag = True
-					new_selections_insert.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
+					if replace:
+						new_selections_insert.append(sublime.Region(region.begin()+len(tag), region.begin()+len(tag)))
+					else:
+						new_selections_insert.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
 				else:
 					new_selections.append(sublime.Region(region.end()+len(tag), region.end()+len(tag)))
 			else:
