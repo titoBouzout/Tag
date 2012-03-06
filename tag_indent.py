@@ -154,7 +154,7 @@ class TagIndentCommand(sublime_plugin.TextCommand):
 			data = TagIndentBlock(self.view.substr(dataRegion), self.view)
 			self.view.replace(edit, dataRegion, data);
 
-	def is_enabled(self):
+	def is_visible(self):
 		for region in self.view.sel():
 			if not region.empty():
 				return True
@@ -165,7 +165,7 @@ class TagIndentDocumentCommand(sublime_plugin.TextCommand):
 		data = TagIndentBlock(self.view.substr(dataRegion).strip(), self.view)
 		self.view.replace(edit, dataRegion, data);
 
-	def is_enabled(self):
+	def is_visible(self):
 		value = False
 		for region in self.view.sel():
 			if region.empty():
