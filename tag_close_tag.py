@@ -62,11 +62,11 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 			while i < lenght:
 				tag = Tag.name(data[i])
 				# if opening tag, close the tag
-				if tag and not Tag.is_closing(data[i]):
-					return '</'+Tag.name(data[i])+''
-				# if closing tag, jump to opening tag
-				else:
-					if tag:
+				if tag:
+					if not Tag.is_closing(data[i]):
+						return '</'+Tag.name(data[i])+''
+					# if closing tag, jump to opening tag
+					else:
 						i = i+1
 						skip = 0
 						while i < lenght:
