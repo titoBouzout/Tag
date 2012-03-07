@@ -3,7 +3,7 @@ Description
 
 "Tag" plugin is a collection of packages about tags, mixed together in an effort to provide a single package with utilities to work with tags.
 
-Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Tag Remove Attributes"
+Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Insert as Tag", "Tag Remove Attributes", "Tag Close", "Tag Lint"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
 
@@ -78,3 +78,22 @@ Allows to remove attributes from tags for selection or document.
 *Usage*
 
 The main menu "Edit" -> "Tag" provide access to the commands
+
+Tag Close
+------------------
+
+Overwrite the built-in funtionallity by a custom one provided by this package which fix some bugs.
+
+*Usage*
+
+Windows, Linux : ALT+.
+OSX : SUPER+ALT+.
+
+Tag Lint
+------------------
+
+Experimental feature which aims to check correctness of opened and closed tags.
+
+*Usage*
+
+The main menu "Edit" -> "Tag" -> "Tag Lint"

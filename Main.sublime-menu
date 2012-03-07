@@ -70,6 +70,12 @@
 						"id":"tag-remove-all-attributes-in-document",
 						"caption":"Remove All Attributes From Tags in Document"
 					},
+					{"caption":"-"},
+					{
+						"command": "tag_lint",
+						"id":"tag-lint",
+						"caption":"Tag Lint"
+					},
 					{"caption":"-"}
         ]
       }
