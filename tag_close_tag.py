@@ -1,9 +1,7 @@
-import sublime, sublime_plugin, re
+import sublime, sublime_plugin
+from Tag import Tag
 
-valid_tag = re.compile("^[a-z0-9\:-]+$", re.I);
-
-self_closing_tags = re.compile("^\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source", re.I)
-
+Tag = Tag()
 
 class TagCloseTagCommand(sublime_plugin.TextCommand):
 
@@ -57,24 +55,23 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 
 		data = data.split('<')
 		data.reverse()
-		#data.pop(0);
 
 		try:
 			i = 0
 			lenght = len(data)-1
 			while i < lenght:
-				maybe_tag = self.tag_name(data[i])
+				tag = Tag.name(data[i])
 				# if opening tag, close the tag
-				if maybe_tag and not self.tag_is_closing(data[i]):
-					return '</'+self.tag_name(data[i])+''
+				if tag and not Tag.is_closing(data[i]):
+					return '</'+Tag.name(data[i])+''
 				# if closing tag, jump to opening tag
 				else:
-					if maybe_tag:
+					if tag:
 						i = i+1
 						skip = 0
 						while i < lenght:
-							if self.tag_name(data[i]) == maybe_tag:
-								if not self.tag_is_closing(data[i]):
+							if Tag.name(data[i]) == tag:
+								if not Tag.is_closing(data[i]):
 									if skip == 0:
 										break
 									else:
@@ -86,22 +83,3 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 			return ''
 		except:
 			return '';
-
-	def tag_name(self, content):
-
-		if content[:1] == '/':
-			tag_name = content.split('/')[1].split('>')[0];
-		else:
-			tag_name = content.split(' ')[0].split('>')[0];
-
-		if valid_tag.match(tag_name) and not self_closing_tags.match(tag_name):
-			return tag_name
-		else:
-			return ''
-
-	def tag_is_closing(self, content):
-
-		if content[:1] == '/':
-			return True
-		else:
-			return False
