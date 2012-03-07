@@ -14,6 +14,7 @@ class TagInsertAsTagCommand(sublime_plugin.TextCommand):
 				region = view.word(region)
 				source = view.substr(region)
 			if not source.strip():
+				new_selections.append(sublime.Region(region.a, region.b))
 				pass
 			else:
 				if re.match("^\s", source):
@@ -23,8 +24,12 @@ class TagInsertAsTagCommand(sublime_plugin.TextCommand):
 					view.replace(edit, region, '<'+source+'/>')
 					new_selections.append(sublime.Region(region.end()+3, region.end()+3))
 				else:
-					view.replace(edit, region, '<'+source+'></'+source.split('\r')[0].split('\n')[0].split(' ')[0]+'>')
-					new_selections.append(sublime.Region(region.end()+2, region.end()+2))
+					tag = source.split('\r')[0].split('\n')[0].split(' ')[0]
+					if tag and Tag.is_valid(tag) and tag != '<' and tag != '</' and tag != '>':
+						view.replace(edit, region, '<'+source+'></'+tag+'>')
+						new_selections.append(sublime.Region(region.end()+2, region.end()+2))
+					else:
+						new_selections.append(sublime.Region(region.end(), region.end()))
 
 		view.sel().clear()
 		for sel in new_selections:
