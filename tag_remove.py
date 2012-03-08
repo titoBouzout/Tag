@@ -30,10 +30,13 @@ class TagRemoveAllInDocumentCommand(sublime_plugin.TextCommand):
 		self.view.replace(edit, dataRegion, data);
 
 class TagRemovePickedInSelectionCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		import functools
-		self.view.window().run_command('hide_panel');
-		self.view.window().show_input_panel("Remove the following tags:", '', functools.partial(self.on_done, edit), None, None)
+	def run(self, edit, tags = False):
+		if not tags:
+			import functools
+			self.view.window().run_command('hide_panel');
+			self.view.window().show_input_panel("Remove the following tags:", '', functools.partial(self.on_done, edit), None, None)
+		else:
+			self.on_done(edit, tags);
 
 	def on_done(self, edit, tags):
 		for region in self.view.sel():
@@ -44,10 +47,13 @@ class TagRemovePickedInSelectionCommand(sublime_plugin.TextCommand):
 			self.view.replace(edit, dataRegion, data);
 
 class TagRemovePickedInDocumentCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		import functools
-		self.view.window().run_command('hide_panel');
-		self.view.window().show_input_panel("Remove the following tags:", '', functools.partial(self.on_done, edit), None, None)
+	def run(self, edit, tags = False):
+		if not tags:
+			import functools
+			self.view.window().run_command('hide_panel');
+			self.view.window().show_input_panel("Remove the following tags:", '', functools.partial(self.on_done, edit), None, None)
+		else:
+			self.on_done(edit, tags);
 
 	def on_done(self, edit, tags):
 		dataRegion = sublime.Region(0, self.view.size())

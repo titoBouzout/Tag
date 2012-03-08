@@ -34,10 +34,13 @@ class TagRemoveAllAttributesInDocumentCommand(sublime_plugin.TextCommand):
 		self.view.replace(edit, dataRegion, data);
 
 class TagRemovePickedAttributesInSelectionCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		import functools
-		self.view.window().run_command('hide_panel');
-		self.view.window().show_input_panel("Remove the following attributes:", '', functools.partial(self.on_done, edit), None, None)
+	def run(self, edit, attributes = False):
+		if not attributes:
+			import functools
+			self.view.window().run_command('hide_panel');
+			self.view.window().show_input_panel("Remove the following attributes:", '', functools.partial(self.on_done, edit), None, None)
+		else:
+			self.on_done(edit, attributes)
 
 	def on_done(self, edit, attributes):
 		for region in self.view.sel():
@@ -48,10 +51,13 @@ class TagRemovePickedAttributesInSelectionCommand(sublime_plugin.TextCommand):
 			self.view.replace(edit, dataRegion, data);
 
 class TagRemovePickedAttributesInDocumentCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		import functools
-		self.view.window().run_command('hide_panel');
-		self.view.window().show_input_panel("Remove the following attributes:", '', functools.partial(self.on_done, edit), None, None)
+	def run(self, edit, attributes = False):
+		if not attributes:
+			import functools
+			self.view.window().run_command('hide_panel');
+			self.view.window().show_input_panel("Remove the following attributes:", '', functools.partial(self.on_done, edit), None, None)
+		else:
+			self.on_done(edit, attributes)
 
 	def on_done(self, edit, attributes):
 		dataRegion = sublime.Region(0, self.view.size())
