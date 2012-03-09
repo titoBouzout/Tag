@@ -2,18 +2,18 @@ import sublime, sublime_plugin
 import re
 
 def TagRemoveAttributesClean(data):
-	regexp = re.compile(r'(<([a-z0-9\:\-_]+)\s+>)');
+	regexp = re.compile('(<([a-z0-9\:\-_]+)\s+>)');
 	data = regexp.sub('<\\2>', data);
 	return data
 
 def TagRemoveAttributesAll(data, view):
-	return TagRemoveAttributesClean(re.sub(r'(<([a-z0-9\:\-_]+)\s+[^>]+>)', '<\\2>', data));
+	return TagRemoveAttributesClean(re.sub('(<([a-z0-9\:\-_]+)\s+[^>]+>)', '<\\2>', data));
 
 def TagRemoveAttributesSelected(data, attributes, view):
 	attributes = attributes.replace(',', ' ').replace(';', ' ').replace('|', ' ')+' '
 	for attribute in attributes.split(' '):
 		if attribute:
-			regexp = re.compile(r'(<([a-z0-9\:\-_]+\s+)([^>]*)\s*'+re.escape(attribute)+'="[^"]+"\s*([^>]*)>)')
+			regexp = re.compile('(<([a-z0-9\:\-_]+\s+)([^>]*)\s*'+re.escape(attribute)+'="[^"]+"\s*([^>]*)>)')
 		 	data = regexp.sub('<\\2\\3\\4>', data);
 		 	data = TagRemoveAttributesClean(data);
 	return data;
