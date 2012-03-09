@@ -1,32 +1,176 @@
-import sublime, sublime_plugin, time
+import sublime, sublime_plugin
+from time import time, sleep
+import threading, thread
 from Tag import Tag
 
 Tag = Tag()
 
-class TagLintCommand(sublime_plugin.TextCommand):
+s = sublime.load_settings('Tag Package.sublime-settings')
 
-	def run(self, edit):
+class Pref:
+	def load(self):
+		Pref.view              				= False
+		Pref.modified          				= True
+		Pref.elapsed_time      				= 0.4
+		Pref.time	      							= time()
+		Pref.wait_time	      				= 0.8
+		Pref.running           				= False
+		Pref.enable_live_tag_linting 	= s.get('enable_live_tag_linting', True)
+		Pref.hard_highlight						= ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt']
+		Pref.statuses									= 0
+		Pref.message_line							= -1
+		Pref.selection_last_line			= -1
+		Pref.message							    = ''
+		Pref.view_size							  = 0
 
-		view = self.view
+Pref().load();
+s.add_on_change('enable_live_tag_linting', lambda:Pref().load())
 
-		begin = time.time()
+class TagLint(sublime_plugin.EventListener):
 
-		region = view.sel()[0]
-		if region.empty():
-			region = sublime.Region(0, view.size())
+	def on_activated(self, view):
+		Pref.modified = True
+		Pref.view = view
+		self.run(True)
 
-		is_xml = view.file_name()
-		if not is_xml:
-			is_xml = False
+	def on_modified(self, view):
+		Pref.modified = True
+		self.run()
+		Pref.time = time()
+
+	def on_selection_modified(self, view):
+		if Pref.enable_live_tag_linting:
+			sel = view.sel()
+			if sel and Pref.message_line != -1 and Pref.message != '':
+				line = view.rowcol(sel[0].end())[0]
+				if Pref.selection_last_line != line:
+					Pref.selection_last_line = line
+					if line == Pref.message_line:
+						view.set_status('TagLint', Pref.message)
+					else:
+						Pref.statuses += 1
+						sublime.set_timeout(lambda:self.clear_status(view, False), 7000);
+						#view.erase_status('TagLint')
+			# else:
+			# 	view.erase_status('TagLint')
+
+	def on_close(self, view):
+		Pref.view = False
+		Pref.modified = True
+
+	def guess_view(self):
+		if sublime.active_window() and sublime.active_window().active_view():
+			Pref.view = sublime.active_window().active_view()
+
+	def run(self, asap = False, from_command = False):
+		if from_command:
+			Pref.view = sublime.active_window().active_view()
+		now = time()
+		if asap == False and (now - Pref.time < Pref.wait_time):
+			return
+		if (Pref.enable_live_tag_linting or from_command) and Pref.modified and Pref.running == False:
+			if Pref.view:
+				view = Pref.view
+				Pref.view_size = view.size()
+				if Pref.view_size > 10485760:
+					return
+				Pref.running = True
+				if from_command:
+					if view.sel():
+						region = view.sel()[0]
+						if region.empty():
+							region = sublime.Region(0, view.size())
+					else:
+						region = sublime.Region(0, view.size())
+				else:
+					region = sublime.Region(0, view.size())
+				is_xml = view.file_name()
+				if not is_xml:
+					is_xml = False
+					file_ext = ''
+				else:
+					file_ext = is_xml.split('.')
+					file_ext.reverse()
+					file_ext = file_ext.pop(0)
+					is_xml = file_ext in Tag.xml_files
+				original_position = region.begin()
+				content = view.substr(region)
+				TagLintThread(view, content, original_position, is_xml, file_ext, from_command).start()
+			else:
+				self.guess_view()
+
+	def display(self, view, message, invalid_tag_located_at, file_ext, from_command):
+		if view:
+			view.erase_regions("TagLint")
+			if invalid_tag_located_at > -1:
+				invalid_tag_located_at_start = invalid_tag_located_at
+				invalid_tag_located_at_end   = invalid_tag_located_at+1
+				size = view.size()
+				while invalid_tag_located_at_end < size:
+					end = view.substr(sublime.Region(invalid_tag_located_at_end, invalid_tag_located_at_end+1))
+					if end == '>':
+						invalid_tag_located_at_end += 1
+						break
+					elif end == '<':
+						break;
+					invalid_tag_located_at_end += 1
+					if invalid_tag_located_at_start - invalid_tag_located_at_end > 100:
+						break
+				region = sublime.Region(invalid_tag_located_at_start, invalid_tag_located_at_end)
+				line, col = view.rowcol(region.a);
+				if file_ext in Pref.hard_highlight or file_ext in Tag.xml_files:
+					view.add_regions("TagLint", [region], 'invalid', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE)
+				else:
+					view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE | sublime.DRAW_OUTLINED)
+				Pref.message_line = line
+				Pref.message = message
+				view.set_status('TagLint', Pref.message+' in Line '+str(Pref.message_line+1)+' ')
+				Pref.statuses += 1
+				sublime.set_timeout(lambda:self.clear_status(view, from_command), 7000);
+				if from_command:
+					view.show_at_center(region)
+			else:
+				Pref.message_line = -1
+				Pref.message = ''
+				if from_command:
+					view.set_status('TagLint', 'No errors found')
+					Pref.statuses += 1
+					sublime.set_timeout(lambda:self.clear_status(view, from_command), 7000);
+				else:
+					view.erase_status('TagLint')
 		else:
-			is_xml = is_xml.split('.')
-			is_xml.reverse()
-			is_xml = is_xml.pop(0)
-			is_xml = is_xml == 'xml' or is_xml == 'xul' or is_xml == 'xhtml'
+			Pref.message_line = -1
+			Pref.message = ''
+		Pref.modified = False
+		Pref.running = False
 
-		original_position = region.begin()
+	def clear_status(self, view, from_command):
+		Pref.statuses -= 1
+		if view and Pref.statuses == 0:
+			view.erase_status('TagLint')
+			if from_command and Pref.enable_live_tag_linting == False:
+				view.erase_regions("TagLint")
 
-		content = view.substr(region)
+class TagLintThread(threading.Thread):
+
+	def __init__(self, view, content, original_position, is_xml, file_ext, from_command):
+		threading.Thread.__init__(self)
+		self.view              = view
+		self.content           = content
+		self.original_position = original_position
+		self.is_xml            = is_xml
+		self.file_ext          = file_ext
+		self.message           = ''
+		self.invalid_tag_located_at = -1
+		self.from_command 		 = from_command
+
+	def run(self):
+
+		begin = time()
+
+		content           = self.content
+		original_position = self.original_position
+		is_xml            = self.is_xml
 
 		# remove unparseable content
 
@@ -82,7 +226,7 @@ class TagLintCommand(sublime_plugin.TextCommand):
 		first_at = 0
 		while i < lenght:
 			tag = Tag.name(data[i], False, is_xml)
-			if tag:
+			if tag and tag != 'html' and tag != 'body':
 				# if opening tag, then check if closing tag exists
 				if not Tag.is_closing(data[i]):
 					# print tag+' is opening '
@@ -104,7 +248,7 @@ class TagLintCommand(sublime_plugin.TextCommand):
 								skip = skip+1
 						a = a+1
 					if a >= lenght:
-						message = '"'+tag+'" tag is not closing'
+						self.message = '"'+tag+'" tag is not closing'
 						invalid_tag_located_at = position
 						break
 			position += len(data[i])+1
@@ -123,7 +267,7 @@ class TagLintCommand(sublime_plugin.TextCommand):
 			lenght = len(data)-1
 			while i < lenght:
 				tag = Tag.name(data[i], False, is_xml)
-				if tag:
+				if tag and tag != 'html' and tag != 'body':
 					# if closing tag, check if opening tag exists
 					if Tag.is_closing(data[i]):
 						# print tag+' is closing '
@@ -142,7 +286,7 @@ class TagLintCommand(sublime_plugin.TextCommand):
 									skip = skip+1
 							a = a+1
 						if a >= lenght:
-							message = '"'+tag+'" tag is not opening'
+							self.message = '"'+tag+'" tag is not opening'
 							invalid_tag_located_at = position-(len(data[i])+1)
 							if invalid_tag_located_at < first_at:
 								invalid_tag_located_at = -1
@@ -150,29 +294,30 @@ class TagLintCommand(sublime_plugin.TextCommand):
 				position -= len(data[i])+1
 				i = i+1
 
-		view.erase_regions("TagLint")
-		if invalid_tag_located_at > -1:
-			invalid_tag_located_at_start = invalid_tag_located_at
-			invalid_tag_located_at_end   = invalid_tag_located_at+1
-			size = view.size()
-			while invalid_tag_located_at_end < size:
-				end = view.substr(sublime.Region(invalid_tag_located_at_end, invalid_tag_located_at_end+1))
-				if end == '>':
-					invalid_tag_located_at_end += 1
-					break
-				elif end == '<':
-					break;
-				invalid_tag_located_at_end += 1
-			region = sublime.Region(invalid_tag_located_at_start, invalid_tag_located_at_end)
-			line, col = view.rowcol(region.a);
-			view.add_regions("TagLint", [region], 'invalid', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE)
-			view.set_status('TagLint', message+' in Line '+str(line+1)+' '+str(time.time() - begin))
-			view.show_at_center(region)
-		else:
-			view.set_status('TagLint', 'No errors found')
-		# print 'Benchmark: '+str(time.time() - begin)
-		sublime.set_timeout(lambda:self.clear_status(view), 4000);
+		elapsed_time = time() - begin;
 
-	def clear_status(self, view):
-		if view:
-			view.erase_status('TagLint')
+		# print 'Benchmark: '+str(elapsed_time)
+
+		self.invalid_tag_located_at = invalid_tag_located_at
+
+		sublime.set_timeout(lambda:TagLint().display(self.view, self.message, self.invalid_tag_located_at, self.file_ext, self.from_command), 0)
+
+def tag_lint_loop():
+	tag_lint = TagLint().run
+	while True:
+		# sleep time is adaptive, if takes more than 0.4 to calculate the word count
+		# sleep_time becomes elapsed_time*3
+		if Pref.running == False:
+			sublime.set_timeout(lambda:tag_lint(), 0)
+		sleep((Pref.elapsed_time*3 if Pref.elapsed_time > 0.4 else 0.4))
+
+if not 'running_tag_lint_loop' in globals():
+	running_tag_lint_loop = True
+	thread.start_new_thread(tag_lint_loop, ())
+
+
+class TagLintCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		Pref.modified = True
+		Pref.running = False
+		TagLint().run(True, True);
