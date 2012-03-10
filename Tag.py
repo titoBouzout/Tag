@@ -9,7 +9,7 @@ class Tag():
 		Tag.regexp_self_closing 					= re.compile("^<?(\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source)[^a-z]", re.I);
 		Tag.regexp_self_closing_xml   		= re.compile("^<?(\?xml|\!)[^a-z]", re.I);
 		Tag.regexp_is_closing 						= re.compile("^<?[^><]+/>", re.I);
-		Tag.xml_files											= ['xhtml', 'xml', 'rdf', 'xul', 'tmTheme', 'tmPreferences', 'tmLanguage', 'sublime-snippet']
+		Tag.xml_files											= ['xhtml', 'xml', 'rdf', 'xul', 'svg', 'xsd', 'xslt','tmTheme', 'tmPreferences', 'tmLanguage', 'sublime-snippet']
 
 	def is_valid(self, content):
 		return Tag.regexp_is_valid.match(content)

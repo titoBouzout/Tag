@@ -29,13 +29,15 @@ s.add_on_change('enable_live_tag_linting', lambda:Pref().load())
 class TagLint(sublime_plugin.EventListener):
 
 	def on_activated(self, view):
-		Pref.modified = True
-		Pref.view = view
-		self.run(True)
+		if not view.settings().get('is_widget') and not view.is_scratch():
+			Pref.modified = True
+			Pref.view = view
+			self.run(True)
 
 	def on_modified(self, view):
-		Pref.modified = True
-		self.run()
+		if not view.settings().get('is_widget') and not view.is_scratch():
+			Pref.modified = True
+			self.run()
 		Pref.time = time()
 
 	def on_selection_modified(self, view):
@@ -63,16 +65,18 @@ class TagLint(sublime_plugin.EventListener):
 			Pref.view = sublime.active_window().active_view()
 
 	def run(self, asap = False, from_command = False):
-		if from_command:
-			Pref.view = sublime.active_window().active_view()
 		now = time()
 		if asap == False and (now - Pref.time < Pref.wait_time):
 			return
 		if (Pref.enable_live_tag_linting or from_command) and Pref.modified and Pref.running == False:
+			if from_command:
+				Pref.view = sublime.active_window().active_view()
 			if Pref.view:
 				view = Pref.view
 				Pref.view_size = view.size()
 				if Pref.view_size > 10485760:
+					return
+				if Pref.view.settings().get('is_widget') or Pref.view.is_scratch():
 					return
 				Pref.running = True
 				if from_command:
