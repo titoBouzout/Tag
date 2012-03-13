@@ -17,7 +17,7 @@ class Pref:
 		Pref.running           				              = False
 		Pref.enable_live_tag_linting 	              = s.get('enable_live_tag_linting', True)
 		Pref.hard_highlight						              = ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt']
-		Pref.enable_live_tag_linting_document_types	= s.get('enable_live_tag_linting_document_types', '')
+		Pref.enable_live_tag_linting_document_types	= [item.lower() for item in s.get('enable_live_tag_linting_document_types', '')]
 		Pref.statuses									              = 0
 		Pref.message_line							              = -1
 		Pref.selection_last_line			              = -1
@@ -87,13 +87,13 @@ class TagLint(sublime_plugin.EventListener):
 					return
 				is_xml = view.file_name()
 				if not is_xml:
-					is_xml = False
+					is_xml = '<?xml' in view.substr(sublime.Region(0, 30))
 					file_ext = ''
 				else:
 					file_ext = ('name.'+is_xml).split('.')
 					file_ext.reverse()
-					file_ext = file_ext.pop(0)
-					is_xml = file_ext in Tag.xml_files
+					file_ext = file_ext.pop(0).lower()
+					is_xml = file_ext in Tag.xml_files or '<?xml' in view.substr(sublime.Region(0, 30))
 				if not from_command and file_ext not in Pref.enable_live_tag_linting_document_types:
 					return
 				Pref.running = True
