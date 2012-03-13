@@ -12,5 +12,12 @@
 
 	/* END TAG INDENT SETTINGS */
 
-	"enable_live_tag_linting": true
+	"enable_live_tag_linting": true,
+
+	/* lint these documents */
+	"enable_live_tag_linting_document_types": [
+																							"", "html", "htm", "php", "tpl", "md", "txt",
+																							"xhtml", "xml", "rdf", "xul", "svg", "xsd", "xslt",
+																							"tmTheme", "tmPreferences", "tmLanguage", "sublime-snippet"
+																						]
 }

@@ -9,36 +9,42 @@ s = sublime.load_settings('Tag Package.sublime-settings')
 
 class Pref:
 	def load(self):
-		Pref.view              				= False
-		Pref.modified          				= True
-		Pref.elapsed_time      				= 0.4
-		Pref.time	      							= time()
-		Pref.wait_time	      				= 0.8
-		Pref.running           				= False
-		Pref.enable_live_tag_linting 	= s.get('enable_live_tag_linting', True)
-		Pref.hard_highlight						= ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt']
-		Pref.statuses									= 0
-		Pref.message_line							= -1
-		Pref.selection_last_line			= -1
-		Pref.message							    = ''
-		Pref.view_size							  = 0
+		Pref.view              				              = False
+		Pref.modified          				              = False
+		Pref.elapsed_time      				              = 0.4
+		Pref.time	      							              = time()
+		Pref.wait_time	      				              = 0.8
+		Pref.running           				              = False
+		Pref.enable_live_tag_linting 	              = s.get('enable_live_tag_linting', True)
+		Pref.hard_highlight						              = ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt']
+		Pref.enable_live_tag_linting_document_types	= s.get('enable_live_tag_linting_document_types', '')
+		Pref.statuses									              = 0
+		Pref.message_line							              = -1
+		Pref.selection_last_line			              = -1
+		Pref.message							                  = ''
+		Pref.view_size							                = 0
 
 Pref().load();
-s.add_on_change('enable_live_tag_linting', lambda:Pref().load())
+s.add_on_change('enable_live_tag_linting',                lambda:Pref().load())
+s.add_on_change('enable_live_tag_linting_document_types', lambda:Pref().load())
 
 class TagLint(sublime_plugin.EventListener):
 
 	def on_activated(self, view):
 		if not view.settings().get('is_widget') and not view.is_scratch():
+			Pref.view = view
+			Pref.selection_last_line = -1
+
+	def on_load(self, view):
+		if not view.settings().get('is_widget') and not view.is_scratch():
 			Pref.modified = True
 			Pref.view = view
-			self.run(True)
+			sublime.set_timeout(lambda:self.run(True), 0)
 
 	def on_modified(self, view):
 		if not view.settings().get('is_widget') and not view.is_scratch():
 			Pref.modified = True
-			self.run()
-		Pref.time = time()
+			Pref.time = time()
 
 	def on_selection_modified(self, view):
 		if Pref.enable_live_tag_linting:
@@ -68,7 +74,8 @@ class TagLint(sublime_plugin.EventListener):
 		now = time()
 		if asap == False and (now - Pref.time < Pref.wait_time):
 			return
-		if (Pref.enable_live_tag_linting or from_command) and Pref.modified and Pref.running == False:
+		if (Pref.enable_live_tag_linting or from_command) and Pref.modified and not Pref.running:
+			Pref.modified = False
 			if from_command:
 				Pref.view = sublime.active_window().active_view()
 			if Pref.view:
@@ -77,6 +84,17 @@ class TagLint(sublime_plugin.EventListener):
 				if Pref.view_size > 10485760:
 					return
 				if Pref.view.settings().get('is_widget') or Pref.view.is_scratch():
+					return
+				is_xml = view.file_name()
+				if not is_xml:
+					is_xml = False
+					file_ext = ''
+				else:
+					file_ext = ('name.'+is_xml).split('.')
+					file_ext.reverse()
+					file_ext = file_ext.pop(0)
+					is_xml = file_ext in Tag.xml_files
+				if not from_command and file_ext not in Pref.enable_live_tag_linting_document_types:
 					return
 				Pref.running = True
 				if from_command:
@@ -88,15 +106,6 @@ class TagLint(sublime_plugin.EventListener):
 						region = sublime.Region(0, view.size())
 				else:
 					region = sublime.Region(0, view.size())
-				is_xml = view.file_name()
-				if not is_xml:
-					is_xml = False
-					file_ext = ''
-				else:
-					file_ext = is_xml.split('.')
-					file_ext.reverse()
-					file_ext = file_ext.pop(0)
-					is_xml = file_ext in Tag.xml_files
 				original_position = region.begin()
 				content = view.substr(region)
 				TagLintThread(view, content, original_position, is_xml, file_ext, from_command).start()
@@ -145,7 +154,6 @@ class TagLint(sublime_plugin.EventListener):
 		else:
 			Pref.message_line = -1
 			Pref.message = ''
-		Pref.modified = False
 		Pref.running = False
 
 	def clear_status(self, view, from_command):
@@ -154,6 +162,8 @@ class TagLint(sublime_plugin.EventListener):
 			view.erase_status('TagLint')
 			if from_command and Pref.enable_live_tag_linting == False:
 				view.erase_regions("TagLint")
+
+tag_lint = TagLint();
 
 class TagLintThread(threading.Thread):
 
@@ -304,15 +314,16 @@ class TagLintThread(threading.Thread):
 
 		self.invalid_tag_located_at = invalid_tag_located_at
 
-		sublime.set_timeout(lambda:TagLint().display(self.view, self.message, self.invalid_tag_located_at, self.file_ext, self.from_command), 0)
+		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.file_ext, self.from_command), 0)
+
 
 def tag_lint_loop():
-	tag_lint = TagLint().run
+	tag_lint_run = tag_lint.run
 	while True:
 		# sleep time is adaptive, if takes more than 0.4 to calculate the word count
 		# sleep_time becomes elapsed_time*3
 		if Pref.running == False:
-			sublime.set_timeout(lambda:tag_lint(), 0)
+			sublime.set_timeout(lambda:tag_lint_run(), 0)
 		sleep((Pref.elapsed_time*3 if Pref.elapsed_time > 0.4 else 0.4))
 
 if not 'running_tag_lint_loop' in globals():
