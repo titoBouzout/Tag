@@ -8,6 +8,7 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 
 		view = self.view
+		is_xml = Tag.view_is_xml(view);
 
 		closed_some_tag = False
 		new_selections = []
@@ -16,7 +17,7 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 		for region in view.sel():
 			cursorPosition = region.begin()
 
-			tag = self.close_tag(view.substr(sublime.Region(0, cursorPosition)))
+			tag = self.close_tag(view.substr(sublime.Region(0, cursorPosition)), is_xml)
 
 			if tag and tag != '</':
 				if region.empty():
@@ -51,7 +52,7 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 		for sel in new_selections:
 			view.sel().add(sel)
 
-	def close_tag(self, data):
+	def close_tag(self, data, is_xml):
 
 		data = data.split('<')
 		data.reverse()
@@ -60,17 +61,17 @@ class TagCloseTagCommand(sublime_plugin.TextCommand):
 			i = 0
 			lenght = len(data)-1
 			while i < lenght:
-				tag = Tag.name(data[i])
+				tag = Tag.name(data[i], True, is_xml)
 				# if opening tag, close the tag
 				if tag:
 					if not Tag.is_closing(data[i]):
-						return '</'+Tag.name(data[i])+''
+						return '</'+Tag.name(data[i], True, is_xml)+''
 					# if closing tag, jump to opening tag
 					else:
 						i = i+1
 						skip = 0
 						while i < lenght:
-							if Tag.name(data[i]) == tag:
+							if Tag.name(data[i], True, is_xml) == tag:
 								if not Tag.is_closing(data[i]):
 									if skip == 0:
 										break

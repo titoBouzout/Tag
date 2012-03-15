@@ -1,4 +1,4 @@
-import re
+import re, sublime
 
 class Tag():
 
@@ -14,21 +14,24 @@ class Tag():
 	def is_valid(self, content):
 		return Tag.regexp_is_valid.match(content)
 
-	def is_self_closing(self, content, ignore_optional = True, is_xml= False):
-		if ignore_optional:
-			return Tag.regexp_self_closing.match(content)
+	def is_self_closing(self, content, return_optional_tags = True, is_xml= False):
+		if return_optional_tags:
+			if is_xml == False:
+				return Tag.regexp_self_closing.match(content) or Tag.regexp_is_closing.match(content)
+			else:
+				return Tag.regexp_is_closing.match(content) or Tag.regexp_self_closing_xml.match(content)
 		else:
 			if is_xml == False:
 				return Tag.regexp_self_closing_optional.match(content) or Tag.regexp_is_closing.match(content)
 			else:
 				return Tag.regexp_is_closing.match(content) or Tag.regexp_self_closing_xml.match(content)
 
-	def name(self, content, ignore_optional = True, is_xml = False):
+	def name(self, content, return_optional_tags = True, is_xml = False):
 		if content[:1] == '/':
 			tag_name = content.split('/')[1].split('>')[0];
 		else:
 			tag_name = content.split(' ')[0].split('>')[0];
-		if self.is_valid(tag_name) and not self.is_self_closing(content, ignore_optional, is_xml):
+		if self.is_valid(tag_name) and not self.is_self_closing(content, return_optional_tags, is_xml):
 			return tag_name
 		else:
 			return ''
@@ -38,3 +41,18 @@ class Tag():
 			return True
 		else:
 			return False
+
+	def view_is_xml(self, view):
+		if view.settings().get('is_xml'):
+			return True
+		else:
+			name = view.file_name()
+			if not name:
+				is_xml = '<?xml' in view.substr(sublime.Region(0, 50))
+			else:
+				name = ('name.'+name).split('.')
+				name.reverse()
+				name = name.pop(0).lower()
+				is_xml = name in Tag.xml_files or '<?xml' in view.substr(sublime.Region(0, 50))
+			view.settings().set('is_xml', is_xml)
+			return is_xml

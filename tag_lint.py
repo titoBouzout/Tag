@@ -85,18 +85,13 @@ class TagLint(sublime_plugin.EventListener):
 					return
 				if Pref.view.settings().get('is_widget') or Pref.view.is_scratch():
 					return
-				is_xml = view.file_name()
-				if not is_xml:
-					is_xml = '<?xml' in view.substr(sublime.Region(0, 30))
-					file_ext = ''
-				else:
-					file_ext = ('name.'+is_xml).split('.')
-					file_ext.reverse()
-					file_ext = file_ext.pop(0).lower()
-					is_xml = file_ext in Tag.xml_files or '<?xml' in view.substr(sublime.Region(0, 30))
+				file_ext = ('name.'+(view.file_name() or '')).split('.')
+				file_ext.reverse()
+				file_ext = file_ext.pop(0).lower()
 				if not from_command and file_ext not in Pref.enable_live_tag_linting_document_types:
 					return
 				Pref.running = True
+				is_xml = Tag.view_is_xml(view)
 				if from_command:
 					if view.sel():
 						region = view.sel()[0]
@@ -112,7 +107,7 @@ class TagLint(sublime_plugin.EventListener):
 			else:
 				self.guess_view()
 
-	def display(self, view, message, invalid_tag_located_at, file_ext, from_command):
+	def display(self, view, message, invalid_tag_located_at, is_xml, file_ext, from_command):
 		if view:
 			view.erase_regions("TagLint")
 			if invalid_tag_located_at > -1:
@@ -131,7 +126,7 @@ class TagLint(sublime_plugin.EventListener):
 						break
 				region = sublime.Region(invalid_tag_located_at_start, invalid_tag_located_at_end)
 				line, col = view.rowcol(region.a);
-				if file_ext in Pref.hard_highlight or file_ext in Tag.xml_files:
+				if file_ext in Pref.hard_highlight or Tag.view_is_xml(view):
 					view.add_regions("TagLint", [region], 'invalid', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE)
 				else:
 					view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE | sublime.DRAW_OUTLINED)
@@ -314,11 +309,11 @@ class TagLintThread(threading.Thread):
 
 		self.invalid_tag_located_at = invalid_tag_located_at
 
-		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.file_ext, self.from_command), 0)
+		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.is_xml, self.file_ext, self.from_command), 0)
 
 
+tag_lint_run = tag_lint.run
 def tag_lint_loop():
-	tag_lint_run = tag_lint.run
 	while True:
 		# sleep time is adaptive, if takes more than 0.4 to calculate the word count
 		# sleep_time becomes elapsed_time*3
@@ -335,4 +330,4 @@ class TagLintCommand(sublime_plugin.WindowCommand):
 	def run(self):
 		Pref.modified = True
 		Pref.running = False
-		TagLint().run(True, True);
+		tag_lint_run(True, True);
