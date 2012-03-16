@@ -108,7 +108,7 @@ class TagLint(sublime_plugin.EventListener):
 				self.guess_view()
 
 	def display(self, view, message, invalid_tag_located_at, is_xml, file_ext, from_command):
-		if view:
+		if view is not None:
 			view.erase_regions("TagLint")
 			if invalid_tag_located_at > -1:
 				invalid_tag_located_at_start = invalid_tag_located_at
@@ -153,7 +153,7 @@ class TagLint(sublime_plugin.EventListener):
 
 	def clear_status(self, view, from_command):
 		Pref.statuses -= 1
-		if view and Pref.statuses == 0:
+		if view is not None and Pref.statuses == 0:
 			view.erase_status('TagLint')
 			if from_command and Pref.enable_live_tag_linting == False:
 				view.erase_regions("TagLint")
