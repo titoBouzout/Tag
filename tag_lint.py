@@ -24,9 +24,9 @@ class Pref:
 		Pref.message							                  = ''
 		Pref.view_size							                = 0
 
-Pref().load();
-s.add_on_change('enable_live_tag_linting',                lambda:Pref().load())
-s.add_on_change('enable_live_tag_linting_document_types', lambda:Pref().load())
+Pref = Pref();
+Pref.load()
+s.add_on_change('reload', lambda:Pref.load())
 
 class TagLint(sublime_plugin.EventListener):
 
