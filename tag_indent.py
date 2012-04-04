@@ -158,6 +158,7 @@ class TagIndentCommand(sublime_plugin.TextCommand):
 		for region in self.view.sel():
 			if not region.empty():
 				return True
+		return False
 
 class TagIndentDocumentCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -174,4 +175,4 @@ class TagIndentDocumentCommand(sublime_plugin.TextCommand):
 				return False
 			else:
 				value = True
-		return value or self.view.score_selector(sublime.Region(0, 100).a, 'text.html | text.xml') > 0
+		return value or self.view.score_selector(0, 'text.html | text.xml') > 0
