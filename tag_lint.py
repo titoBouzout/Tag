@@ -103,11 +103,11 @@ class TagLint(sublime_plugin.EventListener):
 					region = sublime.Region(0, view.size())
 				original_position = region.begin()
 				content = view.substr(region)
-				TagLintThread(view, content, original_position, is_xml, file_ext, from_command).start()
+				TagLintThread(view, content, original_position, is_xml, from_command).start()
 			else:
 				self.guess_view()
 
-	def display(self, view, message, invalid_tag_located_at, is_xml, file_ext, from_command):
+	def display(self, view, message, invalid_tag_located_at, from_command):
 		if view is not None:
 			view.erase_regions("TagLint")
 			if invalid_tag_located_at > -1:
@@ -126,10 +126,7 @@ class TagLint(sublime_plugin.EventListener):
 						break
 				region = sublime.Region(invalid_tag_located_at_start, invalid_tag_located_at_end)
 				line, col = view.rowcol(region.a);
-				if file_ext in Pref.hard_highlight or Tag.view_is_xml(view):
-					view.add_regions("TagLint", [region], 'invalid', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE)
-				else:
-					view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE | sublime.DRAW_OUTLINED)
+				view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE | sublime.DRAW_OUTLINED)
 				Pref.message_line = line
 				Pref.message = message
 				view.set_status('TagLint', Pref.message+' in Line '+str(Pref.message_line+1)+' ')
@@ -162,13 +159,12 @@ tag_lint = TagLint();
 
 class TagLintThread(threading.Thread):
 
-	def __init__(self, view, content, original_position, is_xml, file_ext, from_command):
+	def __init__(self, view, content, original_position, is_xml, from_command):
 		threading.Thread.__init__(self)
 		self.view              = view
 		self.content           = content
 		self.original_position = original_position
 		self.is_xml            = is_xml
-		self.file_ext          = file_ext
 		self.message           = ''
 		self.invalid_tag_located_at = -1
 		self.from_command 		 = from_command
@@ -309,7 +305,7 @@ class TagLintThread(threading.Thread):
 
 		self.invalid_tag_located_at = invalid_tag_located_at
 
-		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.is_xml, self.file_ext, self.from_command), 0)
+		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.from_command), 0)
 
 
 tag_lint_run = tag_lint.run
