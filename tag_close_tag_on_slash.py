@@ -3,9 +3,14 @@ from Tag import Tag
 
 Tag = Tag()
 
+s = sublime.load_settings('Tag Package.sublime-settings')
+
 class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 	def run(self, edit):
+		if s.get('enable_close_tag_on_slash') == False:
+			self.view.run_command('insert',  {"characters": "/"})
+			return
 
 		view = self.view
 		is_xml = Tag.view_is_xml(view)
