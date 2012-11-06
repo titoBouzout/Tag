@@ -4,7 +4,7 @@ class Tag():
 
 	def __init__(self):
 
-		Tag.regexp_is_valid								= re.compile("^[a-z0-9\:\-_]+$", re.I);
+		Tag.regexp_is_valid								= re.compile("^[a-z0-9#\:\-_]+$", re.I);
 		Tag.regexp_self_closing_optional 	= re.compile("^<?(\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source|/?li|/?p)[^a-z]", re.I);
 		Tag.regexp_self_closing 					= re.compile("^<?(\?xml|\!|area|base|br|col|frame|hr|img|input|link|meta|param|command|embed|source)[^a-z]", re.I);
 		Tag.regexp_self_closing_xml   		= re.compile("^<?(\?xml|\!)[^a-z]", re.I);
