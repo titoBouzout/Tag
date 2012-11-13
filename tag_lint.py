@@ -2,6 +2,7 @@ import sublime, sublime_plugin
 from time import time, sleep
 import threading, thread
 from Tag import Tag
+import re
 
 Tag = Tag()
 
@@ -179,56 +180,7 @@ class TagLintThread(threading.Thread):
 
 		# remove unparseable content
 
-		# comments
-		unparseable = content.split('<!--')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('-->')
-			content += '....'
-			content += len(tmp.pop(0))*'.'
-			content += '...'
-			content += "...".join(tmp)
-			i += 1
-
-		unparseable = content.split('/*')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('*/')
-			content += '..'
-			content += len(tmp.pop(0))*'.'
-			content += '..'
-			content += "..".join(tmp)
-			i += 1
-
-		# script
-		unparseable = content.split('<script')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</script>')
-			content += '.......'
-			content += len(tmp.pop(0))*'.'
-			content += '.........'
-			content += ".........".join(tmp)
-			i += 1
-
-		# script
-		unparseable = content.split('<style')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</style>')
-			content += '......'
-			content += len(tmp.pop(0))*'.'
-			content += '........'
-			content += "........".join(tmp)
-			i += 1
+		content = Tag.clean_html(content)
 
 		# linting: opening tags
 

@@ -63,7 +63,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 
 	def close_tag(self, data, is_xml):
 
-		data = data.split('<')
+		data = Tag.clean_html(data).split('<')
 		data.reverse()
 		data.pop(0);
 
