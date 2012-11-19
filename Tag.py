@@ -88,13 +88,13 @@ class Tag():
 			i += 1
 
 		unparseable = re.split('(\s\/\/[^\n]+\n)', content)
-		print unparseable
+		
 		for comment in unparseable:
 			if comment[:3] == '\n//' or comment[:3] == ' //':
 				content = content.replace(comment, (len(comment))*'.')
 
 		unparseable = re.split('(\s\#[^\n]+\n)', content)
-		print unparseable
+		
 		for comment in unparseable:
 			if comment[:3] == '\n#' or comment[:3] == ' #':
 				content = content.replace(comment, (len(comment))*'.')
