@@ -2,8 +2,9 @@ import sublime, sublime_plugin
 from Tag import Tag
 
 Tag = Tag()
-
-s = sublime.load_settings('Tag Package.sublime-settings')
+def plugin_loaded():
+	global s
+	s = sublime.load_settings('Tag Package.sublime-settings')
 
 class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 

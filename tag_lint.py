@@ -5,8 +5,18 @@ from Tag import Tag
 import re
 
 Tag = Tag()
-
-s = sublime.load_settings('Tag Package.sublime-settings')
+def plugin_loaded():
+	global s, Pref, tag_lint, tag_lint_run
+	s = sublime.load_settings('Tag Package.sublime-settings')
+	Pref = Pref();
+	Pref.load()
+	s.add_on_change('reload', lambda:Pref.load())
+	tag_lint = TagLint();
+	tag_lint_run = tag_lint.run
+	if not 'running_tag_lint_loop' in globals():
+		global running_tag_lint_loop
+		running_tag_lint_loop = True
+		thread.start_new_thread(tag_lint_loop, ())
 
 class Pref:
 	def load(self):
@@ -24,10 +34,6 @@ class Pref:
 		Pref.selection_last_line			              = -1
 		Pref.message							                  = ''
 		Pref.view_size							                = 0
-
-Pref = Pref();
-Pref.load()
-s.add_on_change('reload', lambda:Pref.load())
 
 class TagLint(sublime_plugin.EventListener):
 
@@ -156,7 +162,7 @@ class TagLint(sublime_plugin.EventListener):
 			if from_command and Pref.enable_live_tag_linting == False:
 				view.erase_regions("TagLint")
 
-tag_lint = TagLint();
+
 
 class TagLintThread(threading.Thread):
 
@@ -272,7 +278,7 @@ class TagLintThread(threading.Thread):
 		sublime.set_timeout(lambda:tag_lint.display(self.view, self.message, self.invalid_tag_located_at, self.from_command), 0)
 
 
-tag_lint_run = tag_lint.run
+
 def tag_lint_loop():
 	while True:
 		# sleep time is adaptive, if takes more than 0.4 to calculate the word count
@@ -281,9 +287,7 @@ def tag_lint_loop():
 			sublime.set_timeout(lambda:tag_lint_run(), 0)
 		sleep((Pref.elapsed_time*3 if Pref.elapsed_time > 0.4 else 0.4))
 
-if not 'running_tag_lint_loop' in globals():
-	running_tag_lint_loop = True
-	thread.start_new_thread(tag_lint_loop, ())
+
 
 
 class TagLintCommand(sublime_plugin.WindowCommand):
