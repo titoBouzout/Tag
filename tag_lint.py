@@ -1,10 +1,11 @@
 import sublime, sublime_plugin
 from time import time, sleep
-import threading, thread
+import threading
+import _thread as thread
 from Tag import Tag
 import re
 
-Tag = Tag()
+Tag = Tag.Tag()
 def plugin_loaded():
 	global s, Pref, tag_lint, tag_lint_run
 	s = sublime.load_settings('Tag Package.sublime-settings')

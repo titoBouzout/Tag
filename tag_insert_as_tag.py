@@ -1,7 +1,7 @@
 import sublime, sublime_plugin, re
 from Tag import Tag
 
-Tag = Tag()
+Tag = Tag.Tag()
 
 class TagInsertAsTagCommand(sublime_plugin.TextCommand):
 

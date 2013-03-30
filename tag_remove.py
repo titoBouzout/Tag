@@ -9,9 +9,9 @@ def TagRemoveSelected(data, tags, view):
 	for tag in tags.split(' '):
 		if tag:
 			regexp = re.compile('<'+re.escape(tag)+'(| [^>]*)>', re.IGNORECASE)
-		 	data = regexp.sub('', data);
+			data = regexp.sub('', data);
 			regexp = re.compile('</'+re.escape(tag)+'>', re.IGNORECASE)
-		 	data = regexp.sub('', data);
+			data = regexp.sub('', data);
 	return data;
 
 class TagRemoveAllInSelectionCommand(sublime_plugin.TextCommand):

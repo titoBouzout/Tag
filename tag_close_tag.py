@@ -1,7 +1,7 @@
 import sublime, sublime_plugin
 from Tag import Tag
 
-Tag = Tag()
+Tag = Tag.Tag()
 
 class TagCloseTagCommand(sublime_plugin.TextCommand):
 

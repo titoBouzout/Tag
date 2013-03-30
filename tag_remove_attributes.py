@@ -14,8 +14,8 @@ def TagRemoveAttributesSelected(data, attributes, view):
 	for attribute in attributes.split(' '):
 		if attribute:
 			regexp = re.compile('(<([a-z0-9\:\-_]+\s+)([^>]*)\s*'+re.escape(attribute)+'="[^"]+"\s*([^>]*)>)')
-		 	data = regexp.sub('<\\2\\3\\4>', data);
-		 	data = TagRemoveAttributesClean(data);
+			data = regexp.sub('<\\2\\3\\4>', data);
+			data = TagRemoveAttributesClean(data);
 	return data;
 
 class TagRemoveAllAttributesInSelectionCommand(sublime_plugin.TextCommand):

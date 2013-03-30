@@ -1,7 +1,7 @@
 import sublime, sublime_plugin
 from Tag import Tag
 
-Tag = Tag()
+Tag = Tag.Tag()
 def plugin_loaded():
 	global s
 	s = sublime.load_settings('Tag Package.sublime-settings')
