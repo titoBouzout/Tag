@@ -3,7 +3,7 @@ import re
 from .Edit import Edit as Edit
 
 def TagRemoveAll(data, view):
-	return re.sub(r'<[^>]*>', '', data);
+	return re.sub(r'<[^\?][^>]*>', '', data);
 
 def TagRemoveSelected(data, tags, view):
 	tags = tags.replace(',', ' ').replace(';', ' ').replace('|', ' ')+' '
