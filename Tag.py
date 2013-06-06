@@ -129,4 +129,10 @@ class Tag():
 				content += "........".join(tmp)
 				i += 1
 
+		# here-doc
+		while '<<<' in content:
+			content = content.replace('<<<', '...')
+		while '<<' in content:
+			content = content.replace('<<', '..')
+
 		return content
