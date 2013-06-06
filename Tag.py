@@ -28,9 +28,9 @@ class Tag():
 
 	def name(self, content, return_optional_tags = True, is_xml = False):
 		if content[:1] == '/':
-			tag_name = content.split('/')[1].split('>')[0];
+			tag_name = content.split('/')[1].split('>')[0].strip();
 		else:
-			tag_name = content.split(' ')[0].split('>')[0];
+			tag_name = content.split(' ')[0].split('>')[0].strip();
 		if self.is_valid(tag_name) and not self.is_self_closing(content, return_optional_tags, is_xml):
 			return tag_name
 		else:
