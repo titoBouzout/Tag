@@ -75,52 +75,58 @@ class Tag():
 			content += "...".join(tmp)
 			i += 1
 
-		unparseable = content.split('/*')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('*/')
-			content += '..'
-			content += len(tmp.pop(0))*'.'
-			content += '..'
-			content += "..".join(tmp)
-			i += 1
+		# multiline line comments /* */
+		if content.count('/*') == content.count('*/'):
+			unparseable = content.split('/*')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('*/')
+				content += '..'
+				content += len(tmp.pop(0))*'.'
+				content += '..'
+				content += "..".join(tmp)
+				i += 1
 
+		# one line comments //
 		unparseable = re.split('(\s\/\/[^\n]+\n)', content)
 		for comment in unparseable:
 			if comment[:3] == '\n//' or comment[:3] == ' //':
 				content = content.replace(comment, (len(comment))*'.')
 
+		# one line comments #
 		unparseable = re.split('(\s\#[^\n]+\n)', content)
 		for comment in unparseable:
 			if comment[:3] == '\n#' or comment[:3] == ' #':
 				content = content.replace(comment, (len(comment))*'.')
 
 		# script
-		unparseable = content.split('<script')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</script>')
-			content += '.......'
-			content += len(tmp.pop(0))*'.'
-			content += '.........'
-			content += ".........".join(tmp)
-			i += 1
+		if content.count('<script') == content.count('</script'):
+			unparseable = content.split('<script')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('</script>')
+				content += '.......'
+				content += len(tmp.pop(0))*'.'
+				content += '.........'
+				content += ".........".join(tmp)
+				i += 1
 
 		# style
-		unparseable = content.split('<style')
-		content = unparseable.pop(0)
-		l = len(unparseable)
-		i = 0
-		while i < l:
-			tmp = unparseable[i].split('</style>')
-			content += '......'
-			content += len(tmp.pop(0))*'.'
-			content += '........'
-			content += "........".join(tmp)
-			i += 1
+		if content.count('<style') == content.count('</style'):
+			unparseable = content.split('<style')
+			content = unparseable.pop(0)
+			l = len(unparseable)
+			i = 0
+			while i < l:
+				tmp = unparseable[i].split('</style>')
+				content += '......'
+				content += len(tmp.pop(0))*'.'
+				content += '........'
+				content += "........".join(tmp)
+				i += 1
 
 		return content
