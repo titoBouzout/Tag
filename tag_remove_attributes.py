@@ -1,5 +1,6 @@
 import sublime, sublime_plugin
 import re
+from .Edit import Edit as Edit
 
 def TagRemoveAttributesClean(data):
 	regexp = re.compile('(<([a-z0-9\:\-_]+)\s+>)');
@@ -48,7 +49,8 @@ class TagRemovePickedAttributesInSelectionCommand(sublime_plugin.TextCommand):
 				continue
 			dataRegion = sublime.Region(region.begin(), region.end())
 			data = TagRemoveAttributesSelected(self.view.substr(dataRegion), attributes, self.view)
-			self.view.replace(edit, dataRegion, data);
+			with Edit(self.view) as edit:
+				edit.replace(dataRegion, data);
 
 class TagRemovePickedAttributesInDocumentCommand(sublime_plugin.TextCommand):
 	def run(self, edit, attributes = False):
@@ -62,4 +64,5 @@ class TagRemovePickedAttributesInDocumentCommand(sublime_plugin.TextCommand):
 	def on_done(self, edit, attributes):
 		dataRegion = sublime.Region(0, self.view.size())
 		data = TagRemoveAttributesSelected(self.view.substr(dataRegion), attributes, self.view)
-		self.view.replace(edit, dataRegion, data);
+		with Edit(self.view) as edit:
+			edit.replace(dataRegion, data);
