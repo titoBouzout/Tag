@@ -1,3 +1,7 @@
 [
-	{ "keys": ["ctrl+alt+f"], "command": "tag_indent" }
+	{ "keys": ["ctrl+alt+f"], "command": "tag_indent","context": [{
+"key": "selector",
+"operator": "equal",
+"operand": "text.html,text.htm,text.xml,text.xsl"
+}] }
 ]
