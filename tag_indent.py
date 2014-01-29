@@ -75,7 +75,7 @@ def TagIndentBlock(data, view):
 					beauty += indent_character*level
 				if skip_content_of_this_tags_re.match(f[:20]):
 					tag_is = re.sub(r'<([^ ]+)(>| ).*', '\\1', f[:20], 1)
-					tag_is = re.compile("/"+tag_is+">$", re.I)
+					tag_is = re.compile("\\?/"+tag_is+">$", re.I)
 					beauty += f
 					i = i+1
 					while i < lenght:
@@ -96,7 +96,7 @@ def TagIndentBlock(data, view):
 					beauty += current_indentation
 					if not no_indent_match:
 						level = level - 1
-			elif f[:2]=='</':
+			elif f[:2]=='</' or  f[:3]=='<\\/':
 				if not no_indent_match:
 					level = level - 1
 				#beauty += '3'
