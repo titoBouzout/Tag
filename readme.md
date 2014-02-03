@@ -1,3 +1,5 @@
+***[Sublime Text 3+](http://www.sublimetext.com/) Package. Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation). Just **DON'T** install manually.
+
 Description
 ------------------
 
@@ -6,11 +8,6 @@ Description
 Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Insert as Tag", "Tag Remove Attributes", "Tag Close", "Tag Lint"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
-
-Source / Installation
-------------------
-
-Convenient way to install this plugin is to use "Package Control" via http://wbond.net/sublime_packages/package_control
 
 Upgrade
 ------------------
