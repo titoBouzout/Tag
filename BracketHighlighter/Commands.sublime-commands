@@ -1,0 +1,15 @@
+[
+ // This just provides an alternative name to https://github.com/facelessuser/BracketHighlighter feature
+ {
+     "caption": "Tag: Rename",
+     "command": "bh_key",
+     "args":
+     {
+         "plugin":
+         {
+             "type": ["cfml", "html", "angle"],
+             "command": "bh_modules.tagnameselect"
+         }
+     }
+ }
+]

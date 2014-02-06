@@ -1,0 +1,4 @@
+[
+	//Alternative name for a ST default command
+	{ "caption": "Tag: Fold Attributes", "command": "fold_tag_attributes" }
+]
