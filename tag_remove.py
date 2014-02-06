@@ -6,7 +6,7 @@ def TagRemoveAll(data, view):
 	return re.sub(r'<[^\?][^>]*>', '', data);
 
 def TagRemoveSelected(data, tags, view):
-	tags = tags.replace(',', ' ').replace(';', ' ').replace('|', ' ')+' '
+	tags = tags.replace(',', ' ').replace(';', ' ').replace('|', ' ').replace('<', ' ').replace('>', ' ')+' '
 	for tag in tags.split(' '):
 		if tag:
 			regexp = re.compile('<'+re.escape(tag)+'(| [^>]*)>', re.IGNORECASE)
