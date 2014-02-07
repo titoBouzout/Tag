@@ -58,6 +58,7 @@ class TagCloseTagOnSlashCommand(sublime_plugin.TextCommand):
 			for sel in new_selections_insert:
 				view.sel().add(sel)
 			view.run_command('insert',  {"characters": ">"})
+			view.run_command('reindent',  {"force_indent": False})
 
 		for sel in new_selections:
 			view.sel().add(sel)
