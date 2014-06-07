@@ -134,7 +134,13 @@ class TagLint(sublime_plugin.EventListener):
 						break
 				region = sublime.Region(invalid_tag_located_at_start, invalid_tag_located_at_end)
 				line, col = view.rowcol(region.a);
-				view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_EMPTY_AS_OVERWRITE | sublime.DRAW_OUTLINED)
+				string = re.split('\s|>', view.substr(region))[0]
+				if len(string) > 1 and string[1] == '/':
+					mas = 2
+				else:
+					mas = 1
+				region = sublime.Region(region.a+mas, region.a+len(string))
+				view.add_regions("TagLint", [region], 'variable.parameter', 'dot', sublime.PERSISTENT | sublime.DRAW_SQUIGGLY_UNDERLINE | sublime.DRAW_NO_FILL | sublime.DRAW_NO_OUTLINE | sublime.DRAW_EMPTY_AS_OVERWRITE)
 				Pref.message_line = line
 				Pref.message = message
 				view.set_status('TagLint', Pref.message+' in Line '+str(Pref.message_line+1)+' ')
