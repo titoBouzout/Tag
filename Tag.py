@@ -1,5 +1,16 @@
 import re, sublime
 
+ST2 = int(sublime.version()) < 3000
+
+if ST2:
+	try:
+		sublime.error_message("TAG Package Message:\n\nThis Package does NOT WORK in Sublime Text 2\n\n Use Sublime Text 3 instead.")
+	except:
+		try:
+			sublime.message_dialog("TAG Package Message:\n\nThis Package does NOT WORK in Sublime Text 2\n\n Use Sublime Text 3 instead.")
+		except:
+			pass
+
 class Tag():
 
 	def __init__(self):
