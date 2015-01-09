@@ -1,3 +1,6 @@
 [
-	{ "keys": ["ctrl+shift+,"], "command": "tag_insert_as_tag" }
+	{
+		"keys": ["ctrl+shift+,"],
+		"command": "tag_insert_as_tag"
+	}
 ]

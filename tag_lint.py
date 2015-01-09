@@ -11,6 +11,7 @@ def plugin_loaded():
 	s = sublime.load_settings('Tag Package.sublime-settings')
 	Pref = Pref();
 	Pref.load()
+	s.clear_on_change('reload')
 	s.add_on_change('reload', lambda:Pref.load())
 	tag_lint = TagLint();
 	tag_lint_run = tag_lint.run
