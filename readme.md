@@ -1,5 +1,3 @@
-***[Sublime Text 3+](http://www.sublimetext.com/) Package. Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation). Just **DON'T** install manually.
-
 Description
 ------------------
 
@@ -8,11 +6,6 @@ Description
 Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Insert as Tag", "Tag Remove Attributes", "Tag Close", "Tag Lint"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
-
-Upgrade
-------------------
-
-If you already installed "Close tag on slash" or "Tag indent", please remove these packages first and the associated settings. "Close tag on slash" already provides keymap for "/", then if you already installed that keymap you may want to remove it.
 
 Close tag on slash
 ------------------
@@ -94,3 +87,8 @@ Experimental feature which aims to check correctness of opened and closed tags.
 *Usage*
 
 The main menu "Edit" -> "Tag" -> "Tag Lint"
+
+
+### Installation
+
+Download or clone the contents of this repository to a folder named exactly as the package name into the Packages/ folder of ST.
