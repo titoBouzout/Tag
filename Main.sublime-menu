@@ -26,19 +26,6 @@
 						"caption": "-"
 					},
 					{
-						"command": "tag_indent",
-						"id": "tag-indent-selection",
-						"caption": "Auto-Format Tags on Selection"
-					},
-					{
-						"command": "tag_indent_document",
-						"id": "tag-indent-document",
-						"caption": "Auto-Format Tags on Document"
-					},
-					{
-						"caption": "-"
-					},
-					{
 						"command": "tag_remove_picked_in_selection",
 						"id": "tag-remove-picked-in-selection",
 						"caption": "Remove Picked Tags in Selection"

@@ -29,7 +29,7 @@ class Pref:
 		Pref.wait_time	      				              = 0.8
 		Pref.running           				              = False
 		Pref.enable_live_tag_linting 	              = s.get('enable_live_tag_linting', True)
-		Pref.hard_highlight						              = ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt']
+		Pref.hard_highlight						              = ['', 'html', 'htm', 'php', 'tpl', 'md', 'txt', 'jsx', 'js']
 		Pref.enable_live_tag_linting_document_types	= [item.lower() for item in s.get('enable_live_tag_linting_document_types', '')]
 		Pref.statuses									              = 0
 		Pref.message_line							              = -1

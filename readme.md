@@ -3,7 +3,7 @@ Description
 
 "Tag" plugin is a collection of packages about tags, mixed together in an effort to provide a single package with utilities to work with tags.
 
-Currently provides: "Close tag on slash", "Tag indent or AutoFormat Tags",  "Tag Remove", "Insert as Tag", "Tag Remove Attributes", "Tag Close", "Tag Lint"
+Currently provides: "Close tag on slash", "Tag Remove", "Insert as Tag", "Tag Remove Attributes", "Tag Close", "Tag Lint"
 
 Improvements and more features about tags are welcome on this package. Please submit these.
 
@@ -16,31 +16,6 @@ Requires build 2111 or later of Sublime Text 2.
 *Usage*
 
 Runs automatically when inserting an Slash "/" into an HTML document.
-
-Tag Indent
-------------------
-
-Apply and/or add beauty indentation to HTML/XML/RDF/XUL tags found on selection(s).
-
-*Aims*
-
-Aims to add and/or apply correct indentation to little portions of HTML or XML, not to complete documents.
-
-*Usage*
-
-There is context menuitems called "Indent Tags on Selection", "Indent Tags on Document"
-
-There is also Main menuitems: Edit -> Tag -> "Indent Tags on Selection", "Indent Tags on Document"
-
-There is also commands "Indent Tags on Selection", "Indent Tags on Document"
-
-*Information*
-
-It takes the starting "indentation level" from the first line of each selection and sums tabs as needed.
-
-On empty tags, and on tags with less than 60 characters, it writes the tag in one line.
-
-Short-cut is "ctrl+alt+f"
 
 Tag Remove
 ------------------
